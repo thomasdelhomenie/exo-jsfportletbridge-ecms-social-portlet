@@ -1,0 +1,73 @@
+<f:view id="ajaxEcho" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j" 
+	xmlns:rich="http://richfaces.org/rich">
+   <h:head/>
+   <h:body>
+		<style>
+		        .productThumbnailColumn {
+		                width: 30%;
+		        }
+		        .productDetailColumn {
+		                width: 70%;
+		                padding-left: 10px;
+		                postition: relative;
+		        }
+		        .buyButtonDiv {
+		                width: 100%;
+		                text-align: right;
+		        }
+		        .buyButton {
+		                width: 40px;
+		                height: 21px;
+		                font-weight: bold;
+		        }
+		        .FileContent .Content {
+		                text-align: center;
+		        }
+		</style>
+
+        <h:form prependId="false">
+                <rich:dataGrid value="#{comicsStoreBean.products}" var="product" columns="3" elements="6"
+                               width="600px" border="0">
+                    <rich:panel bodyClass="pbody">
+                        <f:facet name="header">
+                            <h:outputText value="#{product.name}"></h:outputText>
+                        </f:facet>
+                        <h:panelGrid id="product" columns="2" columnClasses="productThumbnailColumn, productDetailColumn">
+                                <h:panelGroup>
+                                        <h:panelGroup rendered="#{not empty product.thumbnailPath}">
+                                                <img src="/rest/jcr/repository/collaboration#{product.thumbnailPath}" width="80px"></img>
+                                        </h:panelGroup>
+                                </h:panelGroup>
+                                <h:panelGrid columns="2">
+                                     <h:outputText value="Description:" styleClass="label"></h:outputText>
+                                     <h:outputText value="#{product.description}"/>
+                                     <h:outputText value="Price:" styleClass="label"></h:outputText>
+                                     <h:outputText value="#{product.price} €"/>
+                                     <h:outputText value="Photos:" styleClass="label"></h:outputText>
+                                     <ui:repeat value="#{product.pictures}" var="picture" varStatus="status">
+                                        <h:outputLink onclick="window.location = window.location.pathname + '?content-id=/repository/collaboration#{picture.path}'; return false;" value="#">
+                                                <h:outputText value="#{picture.title}"></h:outputText>
+                                        </h:outputLink>
+                                        #{status.last ? '' : ' | '}
+                                     </ui:repeat>
+                                </h:panelGrid>
+                        </h:panelGrid>
+                        <div class="buyButtonDiv">
+                                <h:commandButton value="Buy" styleClass="buyButton" action="#{comicsStoreBean.buy}">
+                                	<f:param name="productId" value="#{product.id}" />
+                                	<f:param name="productName" value="#{product.name}" />
+                                </h:commandButton>
+                        </div>
+                    </rich:panel>
+                    <f:facet name="footer">
+                        <rich:dataScroller/>
+                    </f:facet>
+                </rich:dataGrid>
+        </h:form>
+
+   </h:body>
+</f:view>
